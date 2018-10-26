@@ -41,9 +41,7 @@ Instructions:
    * @return {Promise}    - A Promise that resolves when the XHR succeeds and fails otherwise.
    */
   function get(url) {
-    return fetch(url, {
-      method: 'get'
-    });
+    return fetch(url);
   }
 
   /**
@@ -64,9 +62,14 @@ Instructions:
      */
     getJSON('../data/earth-like-results.json')
     .then(function(response) {
+      
+      addSearchHeader(response.query);
       response.results.forEach(function(url) {
-        getJSON(url).then(createPlanetThumb);
-      });
-    });
-  });
+        return new Promise(function(resolve,reject) {
+          getJSON(url).then(createPlanetThumb);
+        });
+      }); //end foreach
+    }); // end then
+    //catch here
+  }); // end eventlistener
 })(document);
